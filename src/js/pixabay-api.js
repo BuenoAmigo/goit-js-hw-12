@@ -5,6 +5,7 @@ import axios from "axios";
 import { createGalleryMarkup } from "./render-functions";
 const galleryList = document.querySelector(".gallery-list");
 const loadMoreBtn = document.querySelector(".loadMoreBtn");
+let currentHits = 0;
 
 export default function onSearch(searchQuery, currentPage) {
     const KEY_API = "42986246-3ae10d3224d15127557fd6ee9";
@@ -16,7 +17,7 @@ export default function onSearch(searchQuery, currentPage) {
         orientation: "horizontal",
         safesearch: true,
         page: currentPage,
-        per_page: 15
+        per_page: 100
     });
 
     const fetchPictures = async () => {
@@ -26,14 +27,29 @@ export default function onSearch(searchQuery, currentPage) {
 
     fetchPictures()
         .then(data => {
+            console.log(data)
             if (!data.total) {
                 iziToast.error({
                     title: "Error",
                     position: "topRight",
                     message: "Sorry, there are no images matching your search query. Please try again!",
                 });
-
             };
+
+            if (!(currentHits - data.totalHits) ){
+                iziToast.info({
+                    message: "We're sorry, but you've reached the end of search results.",
+                });
+                setTimeout(() => { loadMoreBtn.hidden = true}, 20);
+                currentHits =0;
+         // Додав setTimeout з більшою затримкою, щоб кнопка зникала після фетчу останнього масиву зображень
+            
+            }
+            else {
+                currentHits += Number(data.hits.length);
+                console.log(`Total hits: ${currentHits}`)
+                console.dir(data.totalHits)
+            }
 
             galleryList.insertAdjacentHTML("beforeend", createGalleryMarkup(data.hits));
         })

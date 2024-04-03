@@ -20,7 +20,7 @@ loader.hidden = true;
 loadMoreBtn.hidden = true;
 let currentPage = 1;
 let searchQuery;
-let queryTotalPages = 1;
+let currentHits = 0;
 
 function onFormSubmit(evt) {
     evt.preventDefault();
