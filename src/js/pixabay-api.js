@@ -3,6 +3,7 @@ import "izitoast/dist/css/iziToast.min.css";
 import axios from "axios";
 
 import { createGalleryMarkup } from "./render-functions";
+const form = document.querySelector(".search-form");
 const galleryList = document.querySelector(".gallery-list");
 const loadMoreBtn = document.querySelector(".loadMoreBtn");
 let currentHits = 0;
@@ -36,21 +37,23 @@ export default function onSearch(searchQuery, currentPage) {
                 });
             };
 
-            if (!(currentHits - data.totalHits) ){
+            if (currentHits - data.totalHits){
+               currentHits += Number(data.hits.length);
+                console.log(`Total hits: ${currentHits}`)
+                console.dir(data.totalHits)
+            }
+            else {
                 iziToast.info({
                     message: "We're sorry, but you've reached the end of search results.",
                 });
                 setTimeout(() => { loadMoreBtn.hidden = true}, 20);
+                 // Додав setTimeout з більшою затримкою, щоб кнопка зникала після фетчу останнього масиву зображень
                 currentHits =0;
-         // Додав setTimeout з більшою затримкою, щоб кнопка зникала після фетчу останнього масиву зображень
+                form.reset()
+            }
+    
             
-            }
-            else {
-                currentHits += Number(data.hits.length);
-                console.log(`Total hits: ${currentHits}`)
-                console.dir(data.totalHits)
-            }
-
+            
             galleryList.insertAdjacentHTML("beforeend", createGalleryMarkup(data.hits));
         })
         .catch(err => {

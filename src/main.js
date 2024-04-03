@@ -12,6 +12,7 @@ const galleryContainer = document.querySelector(".gallery");
 const galleryList = document.querySelector(".gallery-list");
 const loader = document.querySelector(".loader");
 const loadMoreBtn = document.querySelector(".loadMoreBtn");
+let currentHits = 0;
 
 
 form.addEventListener("submit", onFormSubmit);
@@ -20,10 +21,10 @@ loader.hidden = true;
 loadMoreBtn.hidden = true;
 let currentPage = 1;
 let searchQuery;
-let currentHits = 0;
 
 function onFormSubmit(evt) {
     evt.preventDefault();
+    currentHits = 0;
     galleryList.innerHTML = "";
     loader.hidden = false;
     const { searchRequest } = evt.currentTarget.elements;
