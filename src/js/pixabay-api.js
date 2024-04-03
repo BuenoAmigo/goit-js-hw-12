@@ -4,7 +4,7 @@ import axios from "axios";
 
 import { createGalleryMarkup } from "./render-functions";
 const galleryList = document.querySelector(".gallery-list");
-const loadMoreBtn = document.querySelector(".loadMoreBtn")
+const loadMoreBtn = document.querySelector(".loadMoreBtn");
 
 export default function onSearch(searchQuery, currentPage) {
     const KEY_API = "42986246-3ae10d3224d15127557fd6ee9";
@@ -46,6 +46,7 @@ export default function onSearch(searchQuery, currentPage) {
         })
         .finally(() => {
             loader.hidden = true;
-            loadMoreBtn.hidden = false
+            setTimeout(() => { loadMoreBtn.hidden = false }, 0)
+
         });
 }
