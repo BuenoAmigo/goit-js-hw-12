@@ -3,8 +3,9 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
 export function createGalleryMarkup(arr) {
-    const galleryList = document.querySelector(".gallery");
-    const markup = arr.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
+
+
+    return arr.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
    <div class="galleryItem-wrapper">
         <div class="galleryCard-wrapper">
             <li class="gallery_items">
@@ -35,15 +36,5 @@ export function createGalleryMarkup(arr) {
         </div>
     </div>`).join("");
 
-    galleryList.insertAdjacentHTML('afterbegin', markup);
-    let gallery = new SimpleLightbox('.gallery a',
-        {
-            captionsData: 'alt',
-            captionDelay: 250,
-            captionPosition: 'bottom',
-            widthRatio: 0.9,
-            heightRatio: 0.8,
-        });
-    gallery.refresh()
 }
 

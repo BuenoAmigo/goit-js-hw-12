@@ -82,7 +82,7 @@ input:placeholder {
   border: #6c8cff;
 }
 
-.gallery {
+.gallery-list {
   width: 1130px;
   display: flex;
   flex-wrap: wrap;
@@ -185,4 +185,10 @@ input:placeholder {
   100% {
     border-width: 10px;
   }
+}
+
+.loadMore {
+  display: flex;
+  justify-content: center;
+  margin: 10px auto;
 }
