@@ -41,18 +41,24 @@ function loadMorePictures() {
     if (!onSearch(searchQuery, currentPage)) {
         currentPage = 1;
     }
-    else { onSearch(searchQuery, currentPage) };
+    else {
+        onSearch(searchQuery, currentPage);
+        scrollGallery();
+    };
 }
 
-const galleryCard = document.querySelector('.galleryCard-wrapper');
 
-if (galleryCard) {
-    const cardRect = galleryCard.getBoundingClientRect();
-    const cardHeight = cardRect.height;
 
-    window.scrollBy({
-        top: cardHeight + cardHeight * 2,
-        left: 0,
-        behavior: 'smooth'
-    });
+function scrollGallery() {
+    const galleryCard = document.querySelector('.galleryCard-wrapper');
+
+    if (galleryCard) {
+        const cardHeight = galleryCard.getBoundingClientRect().height;
+
+        window.scrollBy({
+            top: cardHeight * 2,
+            left: 0,
+            behavior: 'smooth'
+        });
+    }
 }
