@@ -1,9 +1,13 @@
 import iziToast from "izitoast";
+import SimpleLightbox from "simplelightbox";
+
+import "simplelightbox/dist/simple-lightbox.min.css";
 import "izitoast/dist/css/iziToast.min.css";
 import axios from "axios";
 
 import { createGalleryMarkup } from "./render-functions";
 const form = document.querySelector(".search-form");
+const galleryContainer = document.querySelector(".gallery");
 const galleryList = document.querySelector(".gallery-list");
 const loadMoreBtn = document.querySelector(".loadMoreBtn");
 let currentHits = 0;
@@ -18,7 +22,7 @@ export default function onSearch(searchQuery, currentPage) {
         orientation: "horizontal",
         safesearch: true,
         page: currentPage,
-        per_page: 100
+        per_page: 15
     });
 
     const fetchPictures = async () => {
@@ -28,7 +32,6 @@ export default function onSearch(searchQuery, currentPage) {
 
     fetchPictures()
         .then(data => {
-            console.log(data)
             if (!data.total) {
                 iziToast.error({
                     title: "Error",
@@ -37,24 +40,35 @@ export default function onSearch(searchQuery, currentPage) {
                 });
             };
 
-            if (currentHits - data.totalHits){
-               currentHits += Number(data.hits.length);
-                console.log(`Total hits: ${currentHits}`)
-                console.dir(data.totalHits)
+            if (currentHits - data.totalHits) {
+                currentHits += Number(data.hits.length);
+                // console.log(`Total hits: ${currentHits}`)
+                // console.dir(data.totalHits)
             }
             else {
+                currentHits = 0;
+                form.reset()
                 iziToast.info({
                     message: "We're sorry, but you've reached the end of search results.",
                 });
-                setTimeout(() => { loadMoreBtn.hidden = true}, 20);
-                 // Додав setTimeout з більшою затримкою, щоб кнопка зникала після фетчу останнього масиву зображень
-                currentHits =0;
-                form.reset()
+                setTimeout(() => { loadMoreBtn.hidden = true }, 20);
+                return
+                // Додав setTimeout з більшою затримкою, щоб кнопка зникала після фетчу останнього масиву зображень
             }
-    
-            
-            
+
+
             galleryList.insertAdjacentHTML("beforeend", createGalleryMarkup(data.hits));
+
+            let gallery = new SimpleLightbox('.gallery a',
+                {
+                    captionsData: 'alt',
+                    captionDelay: 250,
+                    captionPosition: 'bottom',
+                    widthRatio: 0.9,
+                    heightRatio: 0.8,
+                });
+            gallery.refresh();
+
         })
         .catch(err => {
             iziToast.error({
@@ -65,7 +79,6 @@ export default function onSearch(searchQuery, currentPage) {
         })
         .finally(() => {
             loader.hidden = true;
-            setTimeout(() => { loadMoreBtn.hidden = false }, 0)
-
+            setTimeout(() => { loadMoreBtn.hidden = false }, 0);
         });
 }

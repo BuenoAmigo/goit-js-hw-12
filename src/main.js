@@ -8,7 +8,6 @@ import "izitoast/dist/css/iziToast.min.css";
 import onSearch from "./js/pixabay-api";
 
 const form = document.querySelector(".search-form");
-const galleryContainer = document.querySelector(".gallery");
 const galleryList = document.querySelector(".gallery-list");
 const loader = document.querySelector(".loader");
 const loadMoreBtn = document.querySelector(".loadMoreBtn");
@@ -38,8 +37,22 @@ function loadMorePictures() {
     currentPage += 1;
     loader.hidden = false;
     loadMoreBtn.hidden = true;
-    onSearch(searchQuery, currentPage);
-    // queryTotalPages = Math.ceil(searchQuery)
 
+    if (!onSearch(searchQuery, currentPage)) {
+        currentPage = 1;
+    }
+    else { onSearch(searchQuery, currentPage) };
 }
 
+const galleryCard = document.querySelector('.galleryCard-wrapper');
+
+if (galleryCard) {
+    const cardRect = galleryCard.getBoundingClientRect();
+    const cardHeight = cardRect.height;
+
+    window.scrollBy({
+        top: cardHeight + cardHeight * 2,
+        left: 0,
+        behavior: 'smooth'
+    });
+}

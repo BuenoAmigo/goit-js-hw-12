@@ -36,5 +36,6 @@ export function createGalleryMarkup(arr) {
         </div>
     </div>`).join("");
 
+  
 }
 
