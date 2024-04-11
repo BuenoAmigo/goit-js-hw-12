@@ -1,10 +1,4 @@
-import SimpleLightbox from "simplelightbox";
-
-import "simplelightbox/dist/simple-lightbox.min.css";
-
 export function createGalleryMarkup(arr) {
-
-
     return arr.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
    <div class="galleryItem-wrapper">
         <div class="galleryCard-wrapper">
@@ -35,7 +29,5 @@ export function createGalleryMarkup(arr) {
             </li>
         </div>
     </div>`).join("");
-
-  
 }
 
