@@ -28,6 +28,7 @@ let totalPages;
 let currentHits;
 let currentPage = 1;
 let currentLenght;
+let currentQuery;
 
 loaderHidden();
 loadMoreBtnHidden();
@@ -35,44 +36,48 @@ form.addEventListener("submit", onFormSubmit);
 
 function onFormSubmit(evt) {
     evt.preventDefault();
+    loadMoreBtnHidden();
+    currentPage = 1;
     searchQuery = inputData.value.trim();
-    loaderShow();
-    onSearch(searchQuery);
-
-    if (!searchQuery) {
-        iziToast.error({
-            title: err,
+    currentQuery = searchQuery;
+    galleryList.innerHTML = "";
+    if (!currentQuery) {
+        iziToast.warning({
             position: "topRight",
             message: "Oops! Input must not be empty!",
-        })
-    };
-    onSearch(searchQuery).then(data => {
-        loaderShow();
+        });
+        return
+    }
+    loaderShow();
+    onSearch(currentQuery).then(data => {
         loadMoreBtnHidden();
         currentHits = data.totalHits;
         currentGalleryLength = findArrLenght(data.hits);
         totalPages = Math.ceil(currentHits / currentGalleryLength);
         cleanInput();
-        if (!data.total) {
+        if (!data.totalHits) {
             iziToast.error({
                 title: "Error",
                 position: "topRight",
                 message: "Sorry, there are no images matching your search query. Please try again!",
             });
             galleryList.innerHTML = "";
+            loaderHidden();
+            return
         };
-        if (data.total) {
+        if (data.totalHits) {
+            galleryList.insertAdjacentHTML("beforeend", createGalleryMarkup(data.hits));
+            gallery.refresh();
+            loaderHidden();
             loadMoreBtnShow();
         }
-        galleryList.insertAdjacentHTML("beforeend", createGalleryMarkup(data.hits));
-        gallery.refresh();
-        loaderHidden();
     }).catch(err => {
         iziToast.error({
-            title: err,
+            title: "Error",
             position: "topRight",
-            message: "Oops! Something went wrong!",
+            message: err.message,
         });
+        loaderHidden();
     })
 
     function findArrLenght(arr) {
@@ -90,14 +95,14 @@ function loadMorePictures() {
     loadMoreBtnHidden();
     loaderShow();
     currentPage += 1;
-    if (currentPage * currentLenght >= currentHits) {
+    if (currentPage * currentGalleryLength >= currentHits) {
         loadMoreBtnHidden();
         iziToast.info({
             message: "We're sorry, but you've reached the end of search results.",
         });
     }
 
-    onSearch(searchQuery, currentPage).then(data => {
+    onSearch(currentQuery, currentPage).then(data => {
         galleryList.insertAdjacentHTML("beforeend", createGalleryMarkup(data.hits));
         gallery.refresh();
         scrollGallery()
